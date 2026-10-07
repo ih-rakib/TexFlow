@@ -1,0 +1,53 @@
+import type { Connection } from './types';
+
+// Every arrow on the map is data, never hard-coded JSX.
+// { from, to, type, label, what, why, next }
+export const CONNECTIONS: Connection[] = [
+  { from: 'grey-fabric', to: 'grey-store', type: 'material', label: 'Grey fabric arrival',
+    what: ['Grey fabric lots', 'Roll and lot identity', 'Supplier papers'], why: 'Feed traceable grey stock into the unit.', next: 'Store receives, identifies and stocks the lot.' },
+  { from: 'grey-store', to: 'batch', type: 'material', label: 'Fabric and lot papers',
+    what: ['Fabric rolls', 'Roll number and lot number', 'Quantity and weight', 'Order reference'], why: 'Give Batch the exact physical stock to plan from.', next: 'Batch plans and forms the dye lot.' },
+  { from: 'batch', to: 'dyeing', type: 'material', label: 'Batch with batch card',
+    what: ['Prepared batch', 'Batch number and batch card', 'Fabric info', 'Machine allocation', 'Recipe reference'], why: 'Hand a fully-defined, traceable batch to the machine.', next: 'Dyeing loads and executes the recipe.' },
+  { from: 'dyeing', to: 'finishing', type: 'material', label: 'Dyed fabric',
+    what: ['Dyed fabric', 'Batch information', 'Process status'], why: 'Move dyed goods to physical and appearance control.', next: 'Finishing dries, sets width and GSM and finishes.' },
+  { from: 'finishing', to: 'quality', type: 'material', label: 'Finished fabric',
+    what: ['Finished fabric', 'Sample', 'Finishing information'], why: 'Present finished goods for the pass or fail decision.', next: 'Quality inspects, tests and decides.' },
+  { from: 'quality', to: 'garments', type: 'material', label: 'Approved fabric',
+    what: ['Approved fabric', 'Packing and dispatch'], why: 'Only PASS fabric leaves the unit.', next: 'Garments receives and cuts.' },
+
+  { from: 'chemical-lab', to: 'batch', type: 'info', label: 'Draft recipe',
+    what: ['Lab dip reference', 'Dye selection (draft)', 'Target shade'], why: 'So Batch plans against a technically valid recipe.', next: 'Batch attaches the recipe reference to the batch card.' },
+  { from: 'chemical-lab', to: 'dyeing', type: 'info', label: 'Recipe and parameters',
+    what: ['Final recipe', 'Dye percent and chemical dosage', 'pH, temperature, time', 'Liquor ratio', 'Special instructions'], why: 'To execute the approved dyeing process exactly.', next: 'Dyeing doses and runs the curve.' },
+  { from: 'chemical-lab', to: 'quality', type: 'info', label: 'Shade standard',
+    what: ['Standard swatch', 'Shade tolerance', 'Recipe reference'], why: 'So Quality judges against the same standard.', next: 'Quality compares bulk against the standard.' },
+  { from: 'physical-lab', to: 'quality', type: 'info', label: 'Lab test report',
+    what: ['GSM and width results', 'Shrinkage and strength', 'PASS or FAIL against specification'], why: 'Evidence for the quality decision.', next: 'Quality records the decision.' },
+  { from: 'physical-lab', to: 'finishing', type: 'info', label: 'GSM and width targets',
+    what: ['Target GSM and width', 'Correction guidance'], why: 'So Finishing adjusts machine parameters correctly.', next: 'Finishing re-sets the stenter and compactor.' },
+  { from: 'quality', to: 'garments', type: 'info', label: 'Approval and reports',
+    what: ['Approval', 'Test reports', 'Specification sheet'], why: 'Downstream needs proof of conformance.', next: 'Garments accepts the delivery.' },
+
+  { from: 'maintenance', to: 'batch', type: 'support', label: 'Machine upkeep',
+    what: ['Preventive checks', 'Repair and release'], why: 'Batch equipment must be available.', next: 'Batch resumes planning.' },
+  { from: 'maintenance', to: 'dyeing', type: 'support', label: 'Repair and release',
+    what: ['Troubleshooting', 'Repair', 'Testing', 'Machine released'], why: 'Dyeing machines are the bottleneck — downtime stops dyeing.', next: 'Production resumes on the released machine.' },
+  { from: 'maintenance', to: 'finishing', type: 'support', label: 'Machine upkeep',
+    what: ['Stenter and dryer maintenance', 'Release note'], why: 'Finishing quality depends on machine condition.', next: 'Finishing resumes.' },
+  { from: 'maintenance', to: 'physical-lab', type: 'support', label: 'Lab equipment care',
+    what: ['Calibration support', 'Lab equipment repair'], why: 'Test results are only valid on healthy instruments.', next: 'Lab resumes testing.' },
+  { from: 'central-eng', to: 'dyeing', type: 'support', label: 'Steam, water, power',
+    what: ['Steam', 'Water', 'Electricity', 'Utility availability'], why: 'Dyeing cannot run its temperature curve without utilities.', next: 'Dyeing runs and resumes.' },
+  { from: 'central-eng', to: 'finishing', type: 'support', label: 'Utilities supply',
+    what: ['Electricity', 'Steam and hot air', 'Compressed air'], why: 'Dryers and stenters use many utilities.', next: 'Finishing runs and resumes.' },
+  { from: 'central-eng', to: 'chemical-lab', type: 'support', label: 'Lab water and power',
+    what: ['Water', 'Power', 'Conditioned environment'], why: 'Lab trials need stable services.', next: 'Lab continues recipe work.' },
+
+  { from: 'quality', to: 'dyeing', type: 'feedback', label: 'Reprocess request',
+    what: ['Quality result', 'Shade failure details', 'Corrective-action requirement'], why: 'Shade failures must loop back to dyeing with a corrected recipe.', next: 'Dyeing reprocesses after correction.' },
+  { from: 'quality', to: 'finishing', type: 'feedback', label: 'Correct width and GSM',
+    what: ['GSM and width failure', 'Appearance notes'], why: 'Physical failures loop back to finishing parameter adjustment.', next: 'Finishing adjusts and reprocesses.' },
+  { from: 'quality', to: 'chemical-lab', type: 'feedback', label: 'Correct the recipe',
+    what: ['Shade deviation data', 'Re-match request'], why: 'The recipe owner must correct the formulation.', next: 'Chemical lab issues the corrected recipe.' },
+];
